@@ -1,0 +1,73 @@
+<main class="min-h-screen p-4 sm:p-6 lg:p-8">
+  <div class="max-w-7xl mx-auto">
+    <header class="mb-8 text-center">
+      <div class="flex justify-center items-center gap-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.9 2.005c.6.014 1.1.514 1.1 1.12V5h2v14H2V5h2V3.125c0-.606.499-1.106 1.1-1.12L18.9 2.005ZM6 7v6h12V7H6Zm0 8v2h12v-2H6Zm1.5-6a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm9 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z"/>
+        </svg>
+        <div>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800">Monitor de Paraderos</h1>
+            <p class="mt-2 text-lg text-gray-600">Estado de densidad en tiempo real.</p>
+        </div>
+      </div>
+      <div class="mt-6 flex flex-col items-center gap-4">
+        <button (click)="loadData(true)" [disabled]="isLoading()" class="px-4 py-2 bg-white/70 backdrop-blur-sm border border-blue-300 text-blue-600 rounded-lg shadow-sm hover:bg-blue-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" [class.animate-spin]="isLoading()" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 110 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.885-.666A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566z" clip-rule="evenodd" />
+            </svg>
+            <span>{{ isLoading() ? 'Cargando...' : 'Actualizar' }}</span>
+            @if(countdown() > 0 && !isLoading()) {
+              <span class="text-blue-500 font-mono">({{ countdown() }}s)</span>
+            }
+        </button>
+        <div class="flex justify-center items-center gap-2 flex-wrap">
+          <span class="text-sm text-gray-500">Actualización automática:</span>
+          @for (interval of intervals; track interval.value) {
+            <button (click)="selectInterval(interval.value)"
+                    [class]="{'bg-blue-600 text-white border-blue-600': selectedInterval() === interval.value, 'bg-white/70 hover:bg-blue-50 border-blue-300': selectedInterval() !== interval.value}"
+                    class="px-3 py-1 text-sm font-medium rounded-md border transition-colors">
+              {{ interval.label }}
+            </button>
+          }
+        </div>
+      </div>
+    </header>
+
+    <div class="relative">
+      @if(isAutoUpdating()) {
+        <div class="absolute -top-4 right-0 flex items-center justify-center" title="Actualizando en segundo plano...">
+          <span class="relative flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+          </span>
+        </div>
+      }
+
+      @if (isLoading() && busStops().length === 0) {
+        <div class="flex justify-center items-center py-20">
+          <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600"></div>
+        </div>
+      } @else if (error()) {
+        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg shadow-md max-w-2xl mx-auto flex items-center gap-4" role="alert">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.21 3.03-1.742 3.03H4.42c-1.532 0-2.492-1.696-1.742-3.03l5.58-9.92zM10 13a1 1 0 110-2 1 1 0 010 2zm-1-8a1 1 0 00-1 1v3a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+            <div>
+              <p class="font-bold">Ocurrió un error</p>
+              <p>{{ error() }}</p>
+            </div>
+          </div>
+      } @else if (busStops().length === 0) {
+        <div class="text-center py-20">
+          <p class="text-gray-500 text-lg">No se encontraron mediciones de paraderos.</p>
+        </div>
+      } @else {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          @for (stop of busStops(); track stop.id) {
+            <app-bus-stop-card [data]="stop" />
+          }
+        </div>
+      }
+    </div>
+  </div>
+</main>

@@ -1,0 +1,5 @@
+{
+  "name": "Bus Stop Density Monitor",
+  "description": "A modern web application to monitor real-time passenger density at bus stops, providing status updates and recommendations.",
+  "requestFramePermissions": []
+}

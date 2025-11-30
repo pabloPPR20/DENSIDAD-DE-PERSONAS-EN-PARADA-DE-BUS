@@ -1,0 +1,58 @@
+@if (data()) {
+  @let styles = statusStyles();
+  <div class="flex flex-col h-full bg-white/60 backdrop-blur-md rounded-2xl shadow-lg overflow-hidden transition-all duration-300 ease-in-out hover:shadow-2xl hover:scale-[1.02] border-t-4" [class]="styles.borderColor">
+    
+    <!-- Main content area -->
+    <div class="p-5 flex-grow flex flex-col">
+      <!-- Header: Stop ID, DB ID, Location -->
+      <div class="border-b border-gray-200/80 pb-3">
+        <div class="flex justify-between items-start">
+          <p class="text-lg font-bold text-gray-700 tracking-wide">{{ data().stopId }}</p>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium" [class]="styles.bgColor + ' ' + styles.textColor">
+            {{ styles.text }}
+          </span>
+        </div>
+        <p class="text-xs text-gray-500 mt-1 font-mono">
+          ID: {{ data().id }} | {{ data().location.lat | number:'1.4-4' }}, {{ data().location.lng | number:'1.4-4' }}
+        </p>
+      </div>
+
+      <!-- Body: Person Count -->
+      <div class="my-5 flex items-center justify-center gap-4 text-gray-700">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 opacity-70" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+        </svg>
+        <div class="flex items-baseline">
+          <p class="text-6xl font-bold" [class]="personCountStyles()">{{ data().personCount }}</p>
+          <p class="ml-2 text-xl text-gray-500">personas</p>
+        </div>
+      </div>
+      
+      <!-- Sensor Data -->
+      <div class="mt-auto">
+        <div class="bg-gray-50/50 rounded-lg p-3 text-xs text-gray-600">
+            <p class="font-semibold text-gray-500 mb-2 text-center">Datos de Sensores</p>
+            <div class="flex justify-between font-mono">
+                <span>Sensor 1: <span class="font-bold">{{ data().sensor1_distance }}</span> cm</span>
+                <span>Sensor 2: <span class="font-bold">{{ data().sensor2_distance }}</span> cm</span>
+            </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer: Recommendation & Timestamp -->
+    <div class="bg-gray-50/30 p-5 border-t border-gray-200/80">
+      <div class="flex items-start gap-3 text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0 mt-1 opacity-70" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.657a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM4.343 5.657a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM11 16a1 1 0 10-2 0v1a1 1 0 102 0v-1zM4.343 14.343a1 1 0 001.414 1.414l.707-.707a1 1 0 00-1.414-1.414l-.707.707zM15.657 14.343a1 1 0 00-1.414 1.414l.707.707a1 1 0 001.414-1.414l-.707-.707zM10 5a6 6 0 100 12 6 6 0 000-12zM10 7a4 4 0 110 8 4 4 0 010-8z" />
+        </svg>
+        <div>
+          <p class="font-semibold">Recomendación:</p>
+          <p class="mt-1 text-sm text-gray-700">{{ data().recommendation }}</p>
+        </div>
+      </div>
+      <p class="mt-4 text-xs text-right text-gray-400">Última act: {{ data().timestamp | date:'short' }}</p>
+    </div>
+  </div>
+}
